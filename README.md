@@ -107,6 +107,7 @@ I hypothesize that the drivers of churn will likely involve dissatisfied custome
 
 2. If you have access to the Codeup MySQL DB:
    - Save **env.py** in the repository with `user`, `password`, and `host` variables.
+   - Ensure the **env.py** has the appropriate database connection.
    - Run the notebook.
 
 3. If you don't have access:
