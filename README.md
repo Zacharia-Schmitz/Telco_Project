@@ -1,6 +1,10 @@
+# Fix Table
+# Fix Picture
+
+
 <div style="background-color: #212946; padding: 10px; color: #F62196; text-align: center;">
 
-<b>*Codeup Project*</b>
+#### Codeup Project
 ***
 </div>
 
