@@ -9,6 +9,18 @@ from sklearn.tree import DecisionTreeClassifier
 
 
 def create_train_validate_test(train, validate, test, target_variable):
+    """
+    Splits the data into training, validation, and test sets.
+
+    Parameters:
+    train (pandas.DataFrame): The training set.
+    validate (pandas.DataFrame): The validation set.
+    test (pandas.DataFrame): The test set.
+    target_variable (str): The name of the target variable.
+
+    Returns:
+    tuple: A tuple containing the feature matrices and target vectors for the training, validation, and test sets.
+    """
     # We'll do exploration and train our model on the train data
     X_train = train.drop(columns=[target_variable])
     y_train = train[target_variable]
@@ -25,6 +37,15 @@ def create_train_validate_test(train, validate, test, target_variable):
 
 
 def plot_churn_proportion(train):
+    """
+    Plots the proportion of churn in the training set.
+
+    Parameters:
+    train (pandas.DataFrame): The training set.
+
+    Returns:
+    None
+    """
     # Create a figure
     fig = plt.figure(figsize=(10, 6))
     ax = fig.add_subplot(111)
@@ -56,19 +77,32 @@ def plot_churn_proportion(train):
 
 
 def knn_metrics(X_train, y_train, X_validate, y_validate, features):
+    """
+    Trains a K-Nearest Neighbors model on the training set and evaluates its accuracy on the validation set.
+    Prints out the best hyperparameters and average accuracy of the model.
+
+    Parameters:
+    X_train (pandas.DataFrame): The feature matrix of the training set.
+    y_train (pandas.Series): The target vector of the training set.
+    X_validate (pandas.DataFrame): The feature matrix of the validation set.
+    y_validate (pandas.Series): The target vector of the validation set.
+    features (list): The list of features to use for training and testing.
+
+    Returns:
+    None
+    """
     start_time = time.time()
 
     knnmetrics = []
 
     for k in range(1, 30):
-        # KNN
-        # model
+        # KNN model
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(X_train[features], y_train)
-        # Accuracies
+        # Calculate accuracies
         ytr_acc = knn.score(X_train[features], y_train).round(10)
         yv_acc = knn.score(X_validate[features], y_validate).round(10)
-        # Make it into a DF
+        # Store results in a dictionary
         output = {
             "model": knn,
             "features": features,
@@ -79,13 +113,14 @@ def knn_metrics(X_train, y_train, X_validate, y_validate, features):
 
     end_time = time.time()
 
+    # Convert results to a DataFrame and sort by validation accuracy
     df = pd.DataFrame(knnmetrics)
     df["avg_score"] = (df["train_acc"] + df["validate_acc"]) / 2
     df = df.sort_values(
         ["validate_acc", "train_acc"], ascending=[False, True]
     ).reset_index()
 
-    # plot
+    # Plot the accuracies of all models
     plt.figure(figsize=(8, 5))
     plt.plot(df.index, df.train_acc, label="Train", marker="o")
     plt.plot(df.index, df.validate_acc, label="Validate", marker="o")
@@ -96,6 +131,7 @@ def knn_metrics(X_train, y_train, X_validate, y_validate, features):
     plt.legend(title="Scores", fontsize=12)
     plt.show()
 
+    # Print out information about the best hyperparameters and average accuracy
     print(f"Total Models Ran: {len(df)}")
     print("Processing Time:", round(end_time - start_time, 2), "seconds")
     print("--------------------------------")
@@ -107,6 +143,20 @@ def knn_metrics(X_train, y_train, X_validate, y_validate, features):
 
 
 def logistic_regression(X_train, y_train, X_validate, y_validate, features):
+    """
+    Trains a Logistic Regression model on the training set and evaluates its accuracy on the validation set.
+    Prints out the best hyperparameters and average accuracy of the model.
+
+    Parameters:
+    X_train (pandas.DataFrame): The feature matrix of the training set.
+    y_train (pandas.Series): The target vector of the training set.
+    X_validate (pandas.DataFrame): The feature matrix of the validation set.
+    y_validate (pandas.Series): The target vector of the validation set.
+    features (list): The list of features to use for training and testing.
+
+    Returns:
+    None
+    """
     start_time = time.time()
 
     logregmetrics = []
@@ -120,8 +170,7 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
     hyperparameters = list(itertools.product(C, penalty, solver))
 
     for hyperparameter in hyperparameters:
-        # Logistic Regression
-        # model
+        # Logistic Regression model
         logreg = LogisticRegression(
             C=hyperparameter[0],
             penalty=hyperparameter[1],
@@ -129,10 +178,10 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
             random_state=1,
         )
         logreg.fit(X_train[features], y_train)
-        # Accuracies
+        # Calculate accuracies
         ytr_acc = logreg.score(X_train[features], y_train).round(10)
         yv_acc = logreg.score(X_validate[features], y_validate).round(10)
-        # Make it into a DF
+        # Store results in a dictionary
         output = {
             "model": logreg,
             "features": features,
@@ -144,13 +193,14 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
 
     end_time = time.time()
 
+    # Convert results to a DataFrame and sort by validation accuracy
     df = pd.DataFrame(logregmetrics)
     df["avg_score"] = (df["train_acc"] + df["validate_acc"]) / 2
     df = df.sort_values(
         ["validate_acc", "train_acc"], ascending=[False, True]
     ).reset_index()
 
-    # plot
+    # Plot the accuracies of all models
     plt.figure(figsize=(8, 5))
     plt.plot(df.index, df.train_acc, label="Train", marker="o")
     plt.plot(df.index, df.validate_acc, label="Validate", marker="o")
@@ -160,6 +210,8 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
     plt.title(f"Classification Model Performance: LR", fontsize=18)
     plt.legend(title="Scores", fontsize=12)
     plt.show()
+
+    # Print out information about the best hyperparameters and average accuracy
     print(
         "For this we used SK Learn itertools to run through iterations of hyperparamters."
     )
@@ -186,6 +238,20 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
 
 
 def random_forest(X_train, y_train, X_validate, y_validate, features):
+    """
+    Trains a Random Forest Classifier on the training set with different hyperparameters and evaluates its accuracy on the validation set.
+    Prints out the best hyperparameters and the average accuracy of the best model.
+
+    Parameters:
+    X_train (pandas.DataFrame): The feature matrix of the training set.
+    y_train (pandas.Series): The target vector of the training set.
+    X_validate (pandas.DataFrame): The feature matrix of the validation set.
+    y_validate (pandas.Series): The target vector of the validation set.
+    features (list): The list of features to use for training and testing.
+
+    Returns:
+    None
+    """
     start_time = time.time()
 
     rfmetrics = []
@@ -202,8 +268,7 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
     )
 
     for hyperparameter in hyperparameters:
-        # Random Forest
-        # model
+        # Random Forest model
         rf = RandomForestClassifier(
             n_estimators=hyperparameter[0],
             max_depth=hyperparameter[1],
@@ -212,10 +277,10 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
             random_state=1,
         )
         rf.fit(X_train[features], y_train)
-        # Accuracies
+        # Calculate accuracies
         ytr_acc = rf.score(X_train[features], y_train).round(10)
         yv_acc = rf.score(X_validate[features], y_validate).round(10)
-        # Make it into a DF
+        # Store the model and its metrics in a dictionary
         output = {
             "model": rf,
             "features": features,
@@ -227,13 +292,14 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
 
     end_time = time.time()
 
+    # Convert the list of dictionaries to a pandas DataFrame
     df = pd.DataFrame(rfmetrics)
     df["avg_score"] = (df["train_acc"] + df["validate_acc"]) / 2
     df = df.sort_values(
         ["validate_acc", "train_acc"], ascending=[False, True]
     ).reset_index()
 
-    # plot
+    # Plot the accuracies of all the models
     plt.figure(figsize=(8, 5))
     plt.plot(df.index, df.train_acc, label="Train", marker="o")
     plt.plot(df.index, df.validate_acc, label="Validate", marker="o")
@@ -243,10 +309,12 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
     plt.title(f"Classification Model Performance: Random Forest", fontsize=18)
     plt.legend(title="Scores", fontsize=12)
     plt.show()
+
+    # Print out the best hyperparameters and the average accuracy of the best model
     print(
         "Hyperparameters tuned n_estimators, max_depth, min_samples_split, min_samples_leaf"
     )
-    print("As the hyperparamters got larger, the overfitting was more apparent.")
+    print("As the hyperparameters got larger, the overfitting was more apparent.")
     print("")
     print(f"Total Models Ran: {len(df)}")
     print("Processing Time:", round(end_time - start_time, 2), "seconds")
@@ -262,6 +330,21 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
 
 
 def decision_tree(X_train, y_train, X_validate, y_validate, features):
+    """
+    Trains a Decision Tree Classifier on the training set and evaluates its accuracy on the validation set.
+    Generates all possible combinations of hyperparameters and trains a Decision Tree Classifier for each combination.
+    Prints out the best hyperparameters and average accuracy.
+
+    Parameters:
+    X_train (pandas.DataFrame): The feature matrix of the training set.
+    y_train (pandas.Series): The target vector of the training set.
+    X_validate (pandas.DataFrame): The feature matrix of the validation set.
+    y_validate (pandas.Series): The target vector of the validation set.
+    features (list): The list of features to use for training and testing.
+
+    Returns:
+    None
+    """
     start_time = time.time()
 
     dtmetrics = []
@@ -337,6 +420,19 @@ def decision_tree(X_train, y_train, X_validate, y_validate, features):
 
 
 def best_rfc_test(X_train, y_train, X_test, y_test, features):
+    """
+    Trains a Random Forest Classifier on the training set and evaluates its accuracy on the test set.
+
+    Parameters:
+    X_train (pandas.DataFrame): The feature matrix of the training set.
+    y_train (pandas.Series): The target vector of the training set.
+    X_test (pandas.DataFrame): The feature matrix of the test set.
+    y_test (pandas.Series): The target vector of the test set.
+    features (list): The list of features to use for training and testing.
+
+    Returns:
+    None
+    """
     rf = RandomForestClassifier(
         n_estimators=10,
         max_depth=5,
