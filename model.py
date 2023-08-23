@@ -1,6 +1,7 @@
 import pandas as pd
 import time
 import itertools
+import prepare as p
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
