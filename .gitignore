@@ -4,6 +4,6 @@ env.py
 __pycache__
 .vscode/env.py
 robinson-ds-content
-*.csv
+telco.csv
 *.xlsx
 test*
