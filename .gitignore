@@ -7,3 +7,4 @@ robinson-ds-content
 telco.csv
 *.xlsx
 test*
+telco_final_pulled.ipynb
