@@ -8,7 +8,7 @@
 
 <br>
 
-# **Project Telcoco** 
+# **Project Telco** 
 <br>
 
 </div>
