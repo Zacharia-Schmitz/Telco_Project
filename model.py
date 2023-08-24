@@ -213,13 +213,6 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
     plt.show()
 
     # Print out information about the best hyperparameters and average accuracy
-    print(
-        "For this we used SK Learn itertools to run through iterations of hyperparamters."
-    )
-    print("In this specific model, we tuned C level and solver.")
-    print("As it cycled through the iterations and it hit different hyperparameters,")
-    print("you can notice a dips in performance with a big drop off at model 30.")
-    print("")
     print(f"Total Models Ran: {len(df)}")
     print("Processing Time:", round(end_time - start_time, 2), "seconds")
     print("--------------------------------")
@@ -229,13 +222,6 @@ def logistic_regression(X_train, y_train, X_validate, y_validate, features):
     print("--------------------------------")
     print(f"Best LR Average Accuracy:")
     print(df.iloc[0]["avg_score"])
-    print("")
-    print("----------------------------------------------------------------")
-    print("")
-    print("Severe Drop Off at Model 30")
-    print("Model 30 Hyperparameters:")
-    print("C=0.0001 - drop off was most likely due to strong regularization of data")
-    print("Solver='newton-cg'")
 
 
 def random_forest(X_train, y_train, X_validate, y_validate, features):
@@ -312,11 +298,6 @@ def random_forest(X_train, y_train, X_validate, y_validate, features):
     plt.show()
 
     # Print out the best hyperparameters and the average accuracy of the best model
-    print(
-        "Hyperparameters tuned n_estimators, max_depth, min_samples_split, min_samples_leaf"
-    )
-    print("As the hyperparameters got larger, the overfitting was more apparent.")
-    print("")
     print(f"Total Models Ran: {len(df)}")
     print("Processing Time:", round(end_time - start_time, 2), "seconds")
     print("--------------------------------")
@@ -407,9 +388,6 @@ def decision_tree(X_train, y_train, X_validate, y_validate, features):
     plt.title(f"Classification Model Performance: Decision Tree", fontsize=18)
     plt.legend(title="Scores", fontsize=12)
     plt.show()
-    print("For DecisionTree we tuned criterion, splitter, max_depth, min_samples_split")
-    print("min_samples_leaf")
-    print("")
     print(f"Total Models Ran: {len(df)}")
     print("Processing Time:", round(end_time - start_time, 2), "seconds")
     print("--------------------------------")
